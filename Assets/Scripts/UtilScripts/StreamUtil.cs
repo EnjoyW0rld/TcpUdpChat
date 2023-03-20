@@ -49,6 +49,11 @@ namespace shared
 			Write(pStream, pack.GetBytes());
         }
 
+		public static void Write(UdpClient pClient, byte[] pMessage)
+        {
+			pClient.Send(pMessage,pMessage.Length);
+        }
+
 		/**
 		 * Reads the amount of bytes to receive from the stream and then the bytes themselves.
 		 */

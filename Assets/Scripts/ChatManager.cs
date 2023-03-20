@@ -15,6 +15,7 @@ public class ChatManager : MonoBehaviour
 
     [HideInInspector] public UnityEvent<string> OnMessageAppeared;
 
+    
     string IP = "192.168.56.1";
 
     public void OnConnetButtonClick()
@@ -23,7 +24,7 @@ public class ChatManager : MonoBehaviour
         clientObj.name = "Client";
         _client = clientObj.AddComponent<Client>();
         _client.SetChatManager(this);
-        _client.Connect(IP,55555);
+        _client.Connect(IP, 55555);
         SetGameScreen();
     }
     public void OnHostButtonClick()
