@@ -57,6 +57,14 @@ namespace shared
 		/**
 		 * Reads the amount of bytes to receive from the stream and then the bytes themselves.
 		 */
+		public static byte[] Read(UdpClient pClient,ref System.Net.IPEndPoint pEndPoint,out bool IsPing)
+        {
+			IsPing = false;
+            byte[] bytes = pClient.Receive(ref pEndPoint);
+			if(bytes.Length == 1) IsPing = true;
+			return bytes;
+        }
+
 		public static byte[] Read(NetworkStream pStream)
 		{
 			//get the message size first

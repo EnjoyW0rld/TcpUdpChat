@@ -44,7 +44,7 @@ public class Server : MonoBehaviour
             Packet pack = new Packet();
             pack.Write(playerMove);
             byte[] bytes = pack.GetBytes();
-            _udpClient.Send(bytes, bytes.Length,_endPoint);
+            _udpClient.Send(bytes, bytes.Length, _endPoint);
             Debug.Log("Packet sent");
         }
         catch (System.Exception e)
@@ -57,9 +57,9 @@ public class Server : MonoBehaviour
         if (timeToUpdate <= 0)
         {
             ExecuteNetworkingTcp();
-            ExecuteNetworkingUdp();
             timeToUpdate = COOLDOWN;
         }
+        ExecuteNetworkingUdp();
         timeToUpdate -= Time.deltaTime;
     }
 
@@ -68,6 +68,7 @@ public class Server : MonoBehaviour
         if (_tcpClient == null && _listener.Pending())
         {
             _tcpClient = _listener.AcceptTcpClient();
+            //_endPoint = (IPEndPoint)_tcpClient.Client.RemoteEndPoint;
         }
         else return;
 
@@ -84,10 +85,19 @@ public class Server : MonoBehaviour
     {
         if (_udpClient.Available > 0)
         {
-            byte[] message = _udpClient.Receive(ref _endPoint);
+            Debug.Log("before " + _endPoint);
+            //byte[] message = _udpClient.Receive(ref _endPoint);
+            byte[] message = StreamUtil.Read(_udpClient, ref _endPoint, out bool isPing);
+            if(isPing)
+            {
+                Debug.Log("PingRecieved");
+                return;
+            }
+
+            Debug.Log("after " + _endPoint);
             Packet pack = new Packet(message);
             PlayerMoved move = pack.Read<PlayerMoved>();
-            _movementManager.MovePlayer(move.ID,new Vector3(move.pos[0], move.pos[1],move.pos[2]));
+            _movementManager.MovePlayer(move.ID, new Vector3(move.pos[0], move.pos[1], move.pos[2]));
         }
     }
 

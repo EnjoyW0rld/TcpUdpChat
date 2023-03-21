@@ -20,10 +20,10 @@ public class Client : MonoBehaviour
         if (timeToUpdate <= 0)
         {
             UpdateNetwork();
-            UpdateNetworkUdp();
             timeToUpdate = Server.COOLDOWN;
         }
         timeToUpdate -= Time.deltaTime;
+        UpdateNetworkUdp();
     }
 
     public void SetChatManager(ChatManager chatManager)
@@ -46,6 +46,8 @@ public class Client : MonoBehaviour
             _udpClient = new UdpClient();
             _udpClient.Connect(IPAddress.Parse(IP), 55555);
             _endPoint = new IPEndPoint(IPAddress.Parse(IP), 55555);
+
+            StreamUtil.Write(_udpClient, new byte[1] { 1 });
         }
         catch (System.Exception e)
         {
@@ -79,6 +81,12 @@ public class Client : MonoBehaviour
         ChatMessage newMessage = new ChatMessage(message);
         StreamUtil.Write(_client.GetStream(), newMessage);
     }
+
+    /// <summary>
+    /// Method to execute when player is moved
+    /// </summary>
+    /// <param name="id">Id of a player who moved</param>
+    /// <param name="pos">New position</param>
     private void OnPlayerMove(int id, Transform pos)
     {
         PlayerMoved playerMove = new PlayerMoved(pos.position, id);

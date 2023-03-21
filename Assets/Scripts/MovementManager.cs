@@ -32,7 +32,7 @@ public class MovementManager : MonoBehaviour
         float horizontal = Input.GetAxisRaw("Horizontal");
         Vector3 velocity = new Vector3(horizontal, 0, vertical);
 
-        _players[_ownerId].position += velocity;
+        _players[_ownerId].position += velocity * Time.deltaTime;
         if (velocity.magnitude > 0)
         {
             OnPositionChange?.Invoke(_ownerId, _players[_ownerId]);
